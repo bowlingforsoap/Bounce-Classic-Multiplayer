@@ -6,24 +6,45 @@ public class Player : MonoBehaviour
 {
     private const string GROUND_TAG = "Ground";
 
-    //[SerializeField] private InputAction _jumpAction;
-    [SerializeField] private float _jumpHeight = .5f; // default - 50cm
+    [SerializeField] private float _jumpForce;
+    [SerializeField] private float _moveAccelerationAmount;
+    [SerializeField] private float _maxMoveSpeed;
+
 
     private Rigidbody _rigidbody;
     private bool _shouldJump;
+    private bool _shouldMove;
     private bool _isGrounded;
+    private float _acceleration;
 
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.maxLinearVelocity = _maxMoveSpeed;
+    }
 
-        //_jumpAction.performed += Input_Jumped;
+    public void PlayerInput_Moved(CallbackContext callbackContext)
+    {
+        if (callbackContext.started)
+        {
+            Debug.Log("Move started");
+            _shouldMove = true;
+
+            var valueX = callbackContext.ReadValue<Vector2>().x;
+            _acceleration = valueX * _moveAccelerationAmount;
+        }
+        else if (callbackContext.canceled)
+        {
+            Debug.Log("Move canceled");
+            _shouldMove = false;
+        }
     }
 
     public void PlayerInput_Jumped(CallbackContext callbackContext)
     {
-        var isPerformed = callbackContext.performed; 
-        if (!isPerformed && _isGrounded)
+        var isStarted = callbackContext.started; 
+        // TODO: should allow jumping in a close proximity to the ground (i.e. 0.04m)? Otherwise very restrictive...
+        if (isStarted && _isGrounded)
         {
             Debug.Log("Jump requested");
             _shouldJump = true;
@@ -32,11 +53,16 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_shouldJump/* && _isGrounded*/)
+        if (_shouldJump)
         {
             _shouldJump = false;
 
-            _rigidbody.AddForce(Vector3.up * _jumpHeight, ForceMode.Impulse);
+            _rigidbody.AddForce(Vector3.up * _jumpForce);
+        }
+
+        if (_shouldMove)
+        {
+            _rigidbody.velocity += new Vector3(_acceleration, 0f, 0f);
         }
     }
 
@@ -50,7 +76,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.collider.tag == "Ground")
+        if (collision.collider.tag == GROUND_TAG)
         {
             _isGrounded = false;
         }
