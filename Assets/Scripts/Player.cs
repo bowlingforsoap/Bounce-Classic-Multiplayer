@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     private const string GROUND_TAG = "Ground";
 
-    [SerializeField] private float _jumpForce;
+    [SerializeField] private float _jumpImpulse;
     [SerializeField] private float _moveAccelerationAmount;
     [SerializeField] private float _maxMoveSpeed;
 
@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     {
         if (callbackContext.started)
         {
-            Debug.Log("Move started");
+            //Debug.Log("Move started");
             _shouldMove = true;
 
             var valueX = callbackContext.ReadValue<Vector2>().x;
@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
         }
         else if (callbackContext.canceled)
         {
-            Debug.Log("Move canceled");
+            //Debug.Log("Move canceled");
             _shouldMove = false;
         }
     }
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
         // TODO: should allow jumping in a close proximity to the ground (i.e. 0.04m)? Otherwise very restrictive...
         if (isStarted && _isGrounded)
         {
-            Debug.Log("Jump requested");
+            //Debug.Log("Jump requested");
             _shouldJump = true;
         }
     }
@@ -57,7 +57,8 @@ public class Player : MonoBehaviour
         {
             _shouldJump = false;
 
-            _rigidbody.AddForce(Vector3.up * _jumpForce);
+            _rigidbody.AddForce(Vector3.up * _jumpImpulse, ForceMode.Impulse);
+            //Debug.Log($"Velocity after jump start: {_rigidbody.velocity}");
         }
 
         if (_shouldMove)
