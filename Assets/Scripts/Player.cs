@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [Header("GameOver")]
     [SerializeField] private Animation _gameOverAnimation;
     [SerializeField] private AudioSource _gameOverSource;
+    [SerializeField] private GuiController _guiController;
 
 
     private Rigidbody _rigidbody;
@@ -28,12 +29,14 @@ public class Player : MonoBehaviour
         //_rigidbody.maxLinearVelocity = _maxMoveSpeed; // this would also clamps jump height
     }
 
+    // TODO: this should not be in the player
     public void GameOver()
     {
         _rigidbody.maxLinearVelocity = 0f;
         _rigidbody.Sleep();
         _gameOverSource.Play();
         _gameOverAnimation.Play();
+        _guiController.ShowGameOverScreen();
     }
 
     public void PlayerInput_Moved(CallbackContext callbackContext)

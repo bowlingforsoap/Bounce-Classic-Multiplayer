@@ -1,0 +1,9 @@
+.body {
+    color: rgb(207, 207, 207);
+}
+
+.title {
+    font-size: 30px;
+    color: rgb(202, 14, 14);
+    -unity-font-style: bold;
+}
