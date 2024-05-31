@@ -4,11 +4,16 @@ using static UnityEngine.InputSystem.InputAction;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour
 {
+    private const string SPIKE_TAG = "Spike";
     private const string GROUND_TAG = "Ground";
 
     [SerializeField] private float _jumpImpulse;
     [SerializeField] private float _moveAccelerationAmount;
     [SerializeField] private float _maxMoveSpeed;
+
+    [Header("GameOver")]
+    [SerializeField] private Animation _gameOverAnimation;
+    [SerializeField] private AudioSource _gameOverSource;
 
 
     private Rigidbody _rigidbody;
@@ -21,6 +26,14 @@ public class Player : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         //_rigidbody.maxLinearVelocity = _maxMoveSpeed; // this would also clamps jump height
+    }
+
+    public void GameOver()
+    {
+        _rigidbody.maxLinearVelocity = 0f;
+        _rigidbody.Sleep();
+        _gameOverSource.Play();
+        _gameOverAnimation.Play();
     }
 
     public void PlayerInput_Moved(CallbackContext callbackContext)
@@ -73,6 +86,13 @@ public class Player : MonoBehaviour
         if (collision.collider.tag == GROUND_TAG)
         {
             _isGrounded = true;
+        }
+
+        if (collision.gameObject.tag == SPIKE_TAG)
+        {
+            // Game Over
+            Debug.Log("Game Over!");
+            GameOver();
         }
     }
 
