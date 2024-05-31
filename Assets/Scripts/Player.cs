@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _rigidbody.maxLinearVelocity = _maxMoveSpeed;
+        //_rigidbody.maxLinearVelocity = _maxMoveSpeed; // this would also clamps jump height
     }
 
     public void PlayerInput_Moved(CallbackContext callbackContext)
@@ -63,7 +63,8 @@ public class Player : MonoBehaviour
 
         if (_shouldMove)
         {
-            _rigidbody.velocity += new Vector3(_acceleration, 0f, 0f);
+            float newXVelocity = Mathf.Clamp(_rigidbody.velocity.x + _acceleration, -_maxMoveSpeed, _maxMoveSpeed);
+            _rigidbody.velocity = new Vector3(newXVelocity, _rigidbody.velocity.y, 0f);
         }
     }
 

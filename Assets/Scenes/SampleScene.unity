@@ -1037,10 +1037,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1798190822}
-  - component: {fileID: 1798190819}
   - component: {fileID: 1798190818}
   - component: {fileID: 1798190823}
   - component: {fileID: 1798190824}
+  - component: {fileID: 1798190819}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1124,7 +1124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3670dfae0ea573428f99c7f46bc2cc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _jumpImpulse: 100
+  _jumpImpulse: 2
   _moveAccelerationAmount: 0.1
   _maxMoveSpeed: 2
 --- !u!114 &1798190824
