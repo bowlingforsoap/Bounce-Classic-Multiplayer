@@ -1,11 +1,12 @@
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
+using Zenject;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour
 {
     private const string SPIKE_TAG = "Spike";
-    private const string GROUND_TAG = "Ground";
+    //private const string GROUND_TAG = "Ground";
 
     [SerializeField] private float _jumpImpulse;
     [SerializeField] private float _moveAccelerationAmount;
@@ -20,13 +21,12 @@ public class Player : MonoBehaviour
     private Rigidbody _rigidbody;
     private bool _shouldJump;
     private bool _shouldMove;
-    private bool _isGrounded;
+    //private bool _isGrounded;
     private float _acceleration;
 
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        //_rigidbody.maxLinearVelocity = _maxMoveSpeed; // this would also clamps jump height
     }
 
     // TODO: this should not be in the player
@@ -58,9 +58,14 @@ public class Player : MonoBehaviour
 
     public void PlayerInput_Jumped(CallbackContext callbackContext)
     {
-        var isStarted = callbackContext.started; 
+        var isStarted = callbackContext.started;
         // TODO: should allow jumping in a close proximity to the ground (i.e. 0.04m)? Otherwise very restrictive...
-        if (isStarted && _isGrounded)
+        /*if (isStarted && _isGrounded)
+        {
+            //Debug.Log("Jump requested");
+            _shouldJump = true;
+        }*/
+        if (isStarted && GroundManager.Instance.IsPlayerInGroundWithinity)
         {
             //Debug.Log("Jump requested");
             _shouldJump = true;
@@ -86,10 +91,10 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.tag == GROUND_TAG)
+        /*if (collision.collider.tag == GROUND_TAG)
         {
             _isGrounded = true;
-        }
+        }*/
 
         if (collision.gameObject.tag == SPIKE_TAG)
         {
@@ -99,11 +104,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    /*private void OnCollisionExit(Collision collision)
     {
         if (collision.collider.tag == GROUND_TAG)
         {
             _isGrounded = false;
         }
-    }
+    }*/
 }
