@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 using Zenject;
@@ -8,14 +9,19 @@ public class Player : MonoBehaviour
 {
     private const string SPIKE_TAG = "Spike";
     //private const string GROUND_TAG = "Ground";
+    
+    private static readonly int AnimatorGameOverTrigger = Animator.StringToHash("GameOver");
+    private static readonly int AnimatorNewGameTrigger = Animator.StringToHash("NewGame");
 
     [SerializeField] private LayerMask _groundLayerMask;
     [SerializeField] private float _jumpImpulse;
     [SerializeField] private float _moveAccelerationAmount;
     [SerializeField] private float _maxMoveSpeed;
-    [SerializeField] private float _jumpLeeway; // in meters
+    [Tooltip("How much air under the player to also consider as ground.")]
+    [SerializeField] private float _jumpLeeway;
 
-    [Header("GameOver")]
+    [Header("GameOver")] 
+    [SerializeField] private Animator _animator;
     [SerializeField] private Animation _gameOverAnimation;
     [SerializeField] private AudioSource _gameOverSource;
     [SerializeField] private GuiController _guiController;
@@ -32,13 +38,22 @@ public class Player : MonoBehaviour
     }
 
     // TODO: this should not be in the player
-    public void GameOver()
+    public IEnumerator GameOver()
     {
         _rigidbody.maxLinearVelocity = 0f;
         _rigidbody.Sleep();
         _gameOverSource.Play();
-        _gameOverAnimation.Play();
+        // _gameOverAnimation.Play();
+        _animator.SetTrigger(AnimatorGameOverTrigger);
         _guiController.ShowGameOverScreen();
+
+        yield return new WaitForSeconds(3f);
+        
+        _animator.SetTrigger(AnimatorNewGameTrigger);
+        _rigidbody.maxLinearVelocity = float.MaxValue;
+        _rigidbody.WakeUp();
+        transform.position = new Vector3(0.4f, 1.03299999f, 0);
+        _guiController.HideGameOverScreen();
     }
 
     public void PlayerInput_Moved(CallbackContext callbackContext)
@@ -100,24 +115,11 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        /*if (collision.collider.tag == GROUND_TAG)
-        {
-            _isGrounded = true;
-        }*/
-
         if (collision.gameObject.tag == SPIKE_TAG)
         {
             // Game Over
             Debug.Log("Game Over!");
-            GameOver();
+            StartCoroutine(GameOver());
         }
     }
-
-    /*private void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.tag == GROUND_TAG)
-        {
-            _isGrounded = false;
-        }
-    }*/
 }
