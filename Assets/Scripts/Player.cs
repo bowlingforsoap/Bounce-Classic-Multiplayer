@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 using Zenject;
@@ -8,20 +9,21 @@ public class Player : MonoBehaviour
     private const string SPIKE_TAG = "Spike";
     //private const string GROUND_TAG = "Ground";
 
+    [SerializeField] private LayerMask _groundLayerMask;
     [SerializeField] private float _jumpImpulse;
     [SerializeField] private float _moveAccelerationAmount;
     [SerializeField] private float _maxMoveSpeed;
+    [SerializeField] private float _jumpLeeway; // in meters
 
     [Header("GameOver")]
     [SerializeField] private Animation _gameOverAnimation;
     [SerializeField] private AudioSource _gameOverSource;
     [SerializeField] private GuiController _guiController;
-
-
+    
     private Rigidbody _rigidbody;
     private bool _shouldJump;
     private bool _shouldMove;
-    //private bool _isGrounded;
+    private bool _isGrounded;
     private float _acceleration;
 
     private void Start()
@@ -65,11 +67,18 @@ public class Player : MonoBehaviour
             //Debug.Log("Jump requested");
             _shouldJump = true;
         }*/
-        if (isStarted && GroundManager.Instance.IsPlayerInGroundWithinity)
+        if (isStarted && _isGrounded)
         {
             //Debug.Log("Jump requested");
             _shouldJump = true;
         }
+    }
+
+    private void Update()
+    {
+        // Check if player is on the ground
+        // _isGrounded = Physics.SphereCast(transform.position, transform.lossyScale.x, Vector3.down, out _, .05f, _groundLayerMask);
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.lossyScale.y / 2f + _jumpLeeway, _groundLayerMask);
     }
 
     private void FixedUpdate()
