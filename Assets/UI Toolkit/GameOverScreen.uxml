@@ -2,6 +2,6 @@
     <Style src="project://database/Assets/UI%20Toolkit/GameOverScreenStyles.uss?fileID=7433441132597879392&amp;guid=ad40c93f3cd4acc45a8e5f06026dadd0&amp;type=3#GameOverScreenStyles" />
     <ui:VisualElement name="root" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.2); align-items: center; justify-content: center;">
         <ui:Label tabindex="-1" text="Game Over" display-tooltip-when-elided="true" name="GameOverTitle" class="title" />
-        <ui:Label tabindex="-1" text="To Restart, press Space on you keyboard." display-tooltip-when-elided="true" name="GameOverBody" class="body" />
+        <ui:Label tabindex="-1" text="You will be re-spawned in 3 seconds..." display-tooltip-when-elided="true" name="GameOverBody" class="body" />
     </ui:VisualElement>
 </ui:UXML>

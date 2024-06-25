@@ -17,14 +17,6 @@ public class GuiController : MonoBehaviour
 
     private void SetGuiEnabled(UIDocument uiDocument, bool isEnabled)
     {
-        if (isEnabled)
-        {
-            uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
-        } else
-        {
-            uiDocument.rootVisualElement.style.display = DisplayStyle.None;
-        }
-
         uiDocument.enabled = isEnabled;
     }
 }
