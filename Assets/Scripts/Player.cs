@@ -1,14 +1,11 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
-using Zenject;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour
 {
     private const string SPIKE_TAG = "Spike";
-    //private const string GROUND_TAG = "Ground";
     
     private static readonly int AnimatorGameOverTrigger = Animator.StringToHash("GameOver");
     private static readonly int AnimatorNewGameTrigger = Animator.StringToHash("NewGame");
@@ -43,7 +40,6 @@ public class Player : MonoBehaviour
         _rigidbody.maxLinearVelocity = 0f;
         _rigidbody.Sleep();
         _gameOverSource.Play();
-        // _gameOverAnimation.Play();
         _animator.SetTrigger(AnimatorGameOverTrigger);
         _guiController.ShowGameOverScreen();
 
@@ -76,12 +72,6 @@ public class Player : MonoBehaviour
     public void PlayerInput_Jumped(CallbackContext callbackContext)
     {
         var isStarted = callbackContext.started;
-        // TODO: should allow jumping in a close proximity to the ground (i.e. 0.04m)? Otherwise very restrictive...
-        /*if (isStarted && _isGrounded)
-        {
-            //Debug.Log("Jump requested");
-            _shouldJump = true;
-        }*/
         if (isStarted && _isGrounded)
         {
             //Debug.Log("Jump requested");
@@ -92,7 +82,6 @@ public class Player : MonoBehaviour
     private void Update()
     {
         // Check if player is on the ground
-        // _isGrounded = Physics.SphereCast(transform.position, transform.lossyScale.x, Vector3.down, out _, .05f, _groundLayerMask);
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, transform.lossyScale.y / 2f + _jumpLeeway, _groundLayerMask);
     }
 
